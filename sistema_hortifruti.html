@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rede Oba-Hortifruti - Sistema Operacional</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f2f5f3;
+      color: #333;
+    }
+
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 30px auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2e7d32;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: 0.3s;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table th {
+      background: #2e7d32;
+      color: white;
+      padding: 12px;
+    }
+
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .status-ok {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-alerta {
+      color: red;
+      font-weight: bold;
+    }
+
+    .login {
+      max-width: 400px;
+      margin: 50px auto;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-card h3 {
+      color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-card p {
+      font-size: 28px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Rede Oba-Hortifruti</h1>
+  <p>Sistema de Monitoramento Operacional</p>
+</header>
+
+<div class="container">
+
+  <div class="card login" id="loginBox">
+    <h2>Login do Funcionário</h2>
+
+    <label>Usuário</label>
+    <input type="text" id="usuario" placeholder="Digite o usuário">
+
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="Digite a senha">
+
+    <button id="btnLogin" onclick="realizarLogin()">Entrar</button>
+
+    <div id="mensagemLogin"></div>
+  </div>
+
+  <div id="sistema" class="hidden">
+
+    <div class="dashboard" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+      <div class="dashboard-card">
+        <h3>Total de Produtos</h3>
+        <p id="totalProdutos">0</p>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Total de Frutas</h3>
+        <p id="totalFrutas">0</p>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Total de Verduras</h3>
+        <p id="totalVerduras">0</p>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Tarefas Operacionais</h3>
+        <p id="totalTarefas">3</p>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Tarefas Pendentes</h3>
+        <p id="tarefasPendentes">0</p>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Produtos em Estado Crítico</h3>
+        <p id="produtosVencimento">0</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cadastro de Frutas e Verduras</h2>
+
+      <div class="grid">
+        <div>
+          <label>Nome do Produto</label>
+          <input type="text" id="produto" placeholder="Ex: Banana Prata">
+        </div>
+
+        <div>
+          <label>Categoria</label>
+          <select id="categoria">
+            <option>Fruta</option>
+            <option>Verdura</option>
+            
+          </select>
+        </div>
+
+        <div>
+          <label>Quantidade</label>
+          <input type="number" id="quantidade" placeholder="Ex: 50">
+        </div>
+
+        <div>
+          <label>Data de Controle</label>
+          <input type="date" id="validade">
+        </div>
+      </div>
+
+      <button id="btnCadastrar" onclick="cadastrarProduto()">Cadastrar Produto</button>
+
+      <div id="mensagemCadastro"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Quantidade</th>
+            <th>Validade</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabelaProdutos">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Tarefas Operacionais</h2>
+
+      <div class="grid">
+
+        <div>
+          <label>Descrição da Tarefa</label>
+          <input type="text" id="novaTarefa" placeholder="Ex: Reposição de laranjas">
+        </div>
+
+        <div>
+          <label>Responsável</label>
+          <input type="text" id="responsavel" placeholder="Nome do funcionário">
+        </div>
+
+        <div>
+          <label>Setor</label>
+          <select id="setor">
+            <option>Hortifruti</option>
+            <option>Estoque</option>
+            <option>Reposição</option>
+            <option>Frios</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Prioridade</label>
+          <select id="prioridade">
+            <option>Alta</option>
+            <option>Média</option>
+            <option>Baixa</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Prazo</label>
+          <input type="date" id="prazo">
+        </div>
+
+      </div>
+
+      <button id="btnTarefa" onclick="cadastrarTarefa()">Cadastrar Tarefa</button>
+
+      <div id="mensagemTarefa"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tarefa</th>
+            <th>Responsável</th>
+            <th>Setor</th>
+            <th>Prioridade</th>
+            <th>Prazo</th>
+            <th>Status</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabelaTarefas">
+          <tr>
+            <td>Reposição de maçãs</td>
+            <td>Rafael</td>
+            <td>Reposição</td>
+            <td>Alta</td>
+            <td>2026-06-10</td>
+            <td class="status-ok">Concluído</td>
+            <td>
+              <button onclick="concluirTarefa(this)">Concluir</button>
+              <button onclick="editarTarefa(this)">Editar</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Verificar validade das bananas</td>
+            <td>Lucas</td>
+            <td>Hortifruti</td>
+            <td>Média</td>
+            <td>2026-06-12</td>
+            <td class="status-alerta">Pendente</td>
+            <td>
+              <button onclick="concluirTarefa(this)">Concluir</button>
+              <button onclick="editarTarefa(this)">Editar</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Atualizar estoque de verduras</td>
+            <td>Guilherme</td>
+            <td>Estoque</td>
+            <td>Baixa</td>
+            <td>2026-06-15</td>
+            <td class="status-ok">Concluído</td>
+            <td>
+              <button onclick="concluirTarefa(this)">Concluir</button>
+              <button onclick="editarTarefa(this)">Editar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+function realizarLogin() {
+
+  let usuario = document.getElementById('usuario').value;
+  let senha = document.getElementById('senha').value;
+
+  if (usuario === 'admin' && senha === '1234') {
+
+    document.getElementById('mensagemLogin').innerHTML =
+      '<div class="success">Login realizado com sucesso!</div>';
+
+    setTimeout(() => {
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('sistema').classList.remove('hidden');
+      atualizarDashboard();
+    }, 1000);
+
+  } else {
+
+    document.getElementById('mensagemLogin').innerHTML =
+      '<div class="success" style="background:#f8d7da;color:#721c24;">Usuário ou senha inválidos</div>';
+  }
+}
+
+function cadastrarProduto() {
+
+  let produto = document.getElementById('produto').value;
+  let categoria = document.getElementById('categoria').value;
+  let quantidade = document.getElementById('quantidade').value;
+  let validade = document.getElementById('validade').value;
+
+  if (produto === '' || quantidade === '' || validade === '') {
+    alert('Preencha todos os campos!');
+    return;
+  }
+
+  let tabela = document.getElementById('tabelaProdutos');
+
+  let hoje = new Date();
+  let dataValidade = new Date(validade);
+
+  let status = '';
+
+  if (dataValidade < hoje) {
+    status = '<span class="status-alerta">Necessita reposição</span>';
+  } else {
+    status = '<span class="status-ok">Produto adequado</span>';
+  }
+
+  tabela.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td>${produto}</td>
+      <td>${categoria}</td>
+      <td>${quantidade}</td>
+      <td>${validade}</td>
+      <td>${status}</td>
+      <td><button onclick="editarProduto(this)">Editar</button></td>
+    </tr>
+  `);
+
+  document.getElementById('mensagemCadastro').innerHTML =
+    '<div class="success">Produto cadastrado com sucesso!</div>';
+
+  document.getElementById('produto').value = '';
+  document.getElementById('quantidade').value = '';
+  document.getElementById('validade').value = '';
+
+  atualizarDashboard();
+}
+
+function editarProduto(botao) {
+
+  let linha = botao.parentElement.parentElement;
+
+  let produto = linha.cells[0].innerText;
+  let categoria = linha.cells[1].innerText;
+  let quantidade = linha.cells[2].innerText;
+  let dataControle = linha.cells[3].innerText;
+
+  document.getElementById('produto').value = produto;
+  document.getElementById('categoria').value = categoria;
+  document.getElementById('quantidade').value = quantidade;
+  document.getElementById('validade').value = dataControle;
+
+  linha.remove();
+
+  atualizarDashboard();
+
+  document.getElementById('mensagemCadastro').innerHTML =
+    '<div class="success">Produto carregado para edição.</div>';
+}
+
+function cadastrarTarefa() {
+
+  let tarefa = document.getElementById('novaTarefa').value;
+  let responsavel = document.getElementById('responsavel').value;
+  let setor = document.getElementById('setor').value;
+  let prioridade = document.getElementById('prioridade').value;
+  let prazo = document.getElementById('prazo').value;
+
+  if (tarefa === '' || responsavel === '' || prazo === '') {
+    alert('Preencha todos os campos da tarefa!');
+    return;
+  }
+
+  let tabela = document.getElementById('tabelaTarefas');
+
+  tabela.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td>${tarefa}</td>
+      <td>${responsavel}</td>
+      <td>${setor}</td>
+      <td>${prioridade}</td>
+      <td>${prazo}</td>
+      <td class="status-alerta">Pendente</td>
+      <td>
+              <button onclick="concluirTarefa(this)">Concluir</button>
+              <button onclick="editarTarefa(this)">Editar</button>
+            </td>
+    </tr>
+  `);
+
+  document.getElementById('mensagemTarefa').innerHTML =
+    '<div class="success">Tarefa cadastrada com sucesso!</div>';
+
+  document.getElementById('novaTarefa').value = '';
+  document.getElementById('responsavel').value = '';
+  document.getElementById('prazo').value = '';
+
+  atualizarDashboard();
+}
+
+function editarTarefa(botao) {
+
+  let linha = botao.parentElement.parentElement;
+
+  let tarefa = linha.cells[0].innerText;
+  let responsavel = linha.cells[1].innerText;
+  let setor = linha.cells[2].innerText;
+  let prioridade = linha.cells[3].innerText;
+  let prazo = linha.cells[4].innerText;
+
+  document.getElementById('novaTarefa').value = tarefa;
+  document.getElementById('responsavel').value = responsavel;
+  document.getElementById('setor').value = setor;
+  document.getElementById('prioridade').value = prioridade;
+  document.getElementById('prazo').value = prazo;
+
+  linha.remove();
+
+  atualizarDashboard();
+
+  document.getElementById('mensagemTarefa').innerHTML =
+    '<div class="success">Tarefa carregada para edição.</div>';
+}
+
+function concluirTarefa(botao) {
+
+  let linha = botao.parentElement.parentElement;
+
+  linha.cells[5].innerHTML = '<span class="status-ok">Concluído</span>';
+
+  atualizarDashboard();
+}
+
+function atualizarDashboard() {
+
+  let tabelaProdutos = document.getElementById('tabelaProdutos');
+  let tabelaTarefas = document.getElementById('tabelaTarefas');
+
+  let linhasProdutos = tabelaProdutos.getElementsByTagName('tr');
+  let linhasTarefas = tabelaTarefas.getElementsByTagName('tr');
+
+  let totalProdutos = linhasProdutos.length;
+  let totalTarefas = linhasTarefas.length;
+  let vencidos = 0;
+  let frutas = 0;
+  let verduras = 0;
+
+  for (let i = 0; i < linhasProdutos.length; i++) {
+
+    let colunas = linhasProdutos[i].getElementsByTagName('td');
+
+    if (colunas.length >= 5) {
+
+      let categoriaTexto = colunas[1].textContent.trim();
+
+      if (categoriaTexto === 'Fruta') {
+        frutas++;
+      }
+
+      if (categoriaTexto === 'Verdura') {
+        verduras++;
+      }
+
+      let statusTexto = colunas[4].textContent.trim();
+
+      if (statusTexto === 'Necessita reposição') {
+        vencidos++;
+      }
+    }
+  }
+
+  totalProdutos = frutas + verduras;
+
+  document.getElementById('totalProdutos').textContent = totalProdutos;
+  document.getElementById('totalFrutas').textContent = frutas;
+  document.getElementById('totalVerduras').textContent = verduras;
+  document.getElementById('totalTarefas').textContent = totalTarefas;
+  document.getElementById('produtosVencimento').textContent = vencidos;
+
+  let pendentes = 0;
+
+  for (let i = 0; i < linhasTarefas.length; i++) {
+
+    let colunas = linhasTarefas[i].getElementsByTagName('td');
+
+    if (colunas.length >= 6) {
+
+      let statusTarefa = colunas[5].textContent.trim();
+
+      if (statusTarefa.includes('Pendente')) {
+        pendentes++;
+      }
+    }
+  }
+
+  document.getElementById('tarefasPendentes').textContent = pendentes;
+}
+
+window.onload = function () {
+  atualizarDashboard();
+}
+
+</script>
+
+</body>
+</html>
+
+<script>
+
+function realizarLogin() {
+
+  let usuario = document.getElementById('usuario').value;
+  let senha = document.getElementById('senha').value;
+
+  if(usuario === 'admin' && senha === '1234') {
+
+    document.getElementById('mensagemLogin').innerHTML =
+      '<div class="success">Login realizado com sucesso!</div>';
+
+    setTimeout(() => {
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('sistema').classList.remove('hidden');
+    }, 1500);
+
+  } else {
+    document.getElementById('mensagemLogin').innerHTML =
+      '<div class="success" style="background:#f8d7da;color:#721c24;">Usuário ou senha inválidos</div>';
+  }
+}
+
+function cadastrarProduto() {
+
+  let produto = document.getElementById('produto').value;
+  let categoria = document.getElementById('categoria').value;
+  let quantidade = document.getElementById('quantidade').value;
+  let validade = document.getElementById('validade').value;
+
+  if(produto === '' || quantidade === '' || validade === '') {
+    alert('Preencha todos os campos!');
+    return;
+  }
+
+  let tabela = document.getElementById('tabelaProdutos');
+
+  let hoje = new Date();
+  let dataValidade = new Date(validade);
+
+  let status = '';
+
+  if(dataValidade < hoje) {
+    status = '<span class="status-alerta">Necessita reposição</span>';
+  } else {
+    status = '<span class="status-ok">Dentro da validade</span>';
+  }
+
+  tabela.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td>${produto}</td>
+      <td>${categoria}</td>
+      <td>${quantidade}</td>
+      <td>${validade}</td>
+      <td>${status}</td>
+    </tr>
+  `;
+
+  document.getElementById('mensagemCadastro').innerHTML =
+    '<div class="success">Produto cadastrado com sucesso!</div>';
+
+  atualizarDashboard();
+
+  document.getElementById('produto').value = '';
+  document.getElementById('quantidade').value = '';
+  document.getElementById('validade').value = '';
+}
+
+function atualizarDashboard() {
+
+  let linhas = document.querySelectorAll('#tabelaProdutos tr');
+
+  document.getElementById('totalProdutos').innerText = linhas.length;
+
+  let vencidos = 0;
+
+  linhas.forEach(linha => {
+    if(linha.innerHTML.includes('Necessita reposição')) {
+      vencidos++;
+    }
+  });
+
+  document.getElementById('produtosVencimento').innerText = vencidos;
+}
+
+</script>
+
+</body>
+</html>
